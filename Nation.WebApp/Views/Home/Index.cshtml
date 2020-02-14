@@ -1,0 +1,64 @@
+﻿@model Person
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+    $('#addUserModal').on('shown.bs.modal', function () {
+      $('#firstName').trigger('focus')
+    })
+    </script>
+}
+
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Register a person</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="AddPerson" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="firstName">First name</label>
+                        <input asp-for="FirstName" class="form-control" id="firstName" placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last name</label>
+                        <input asp-for="LastName" class="form-control" id="lastName" placeholder="Doe">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Confirm"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex mb-3">
+    <h2 class="mr-auto">Registered people</h2>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Add</button>
+</div>
+
+<div class="row">
+    @foreach (Person person in ViewBag.People)
+    {
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <a asp-action="DeletePerson" asp-route-id="@person.Id" class="card-close">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    <h5 class="card-title">@person.FirstName @person.LastName</h5>
+                    <a asp-action="GetPerson" asp-route-id="@person.Id" class="card-link">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

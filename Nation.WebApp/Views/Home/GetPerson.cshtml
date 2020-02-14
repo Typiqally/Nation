@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@inject Nation.WebApp.Services.ICountryService CountryService
+@model CountryViewModel
+@{
+    Person person = ViewBag.Person;
+    ViewData["Title"] = $"{person.FirstName} {person.LastName}";
+}
+
+@section Stylesheets
+{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
+}
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+    $('select').selectpicker();
+    </script>
+}
+
+<div class="d-flex mb-3">
+    <h2 class="mr-auto">@person.FirstName's favorites</h2>
+    <form asp-action="AddFavorites" asp-route-personId="@person.Id" method="post">
+        <select asp-for="MultipleSelected" asp-items="Model.Countries" class="selectpicker" multiple data-live-search="true"></select>
+        <input type="submit" class="btn btn-primary" value="Add">
+    </form>
+</div>
+
+<div class="row">
+    @foreach (Favorite favorite in ViewBag.Favorites)
+    {
+        <div class="col-3">
+            <div class="card">
+                <img class="card-img-top" src="@await CountryService.GetImageUriAsync(favorite.Country)">
+                <div class="card-body">
+                    <a asp-action="DeleteFavorite" asp-route-id="@favorite.Id" asp-route-returnUrl="@Context.Request.GetEncodedUrl()" class="card-close">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    <h5 class="card-title">@favorite.Country.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@favorite.Country.Capital</h6>
+                </div>
+            </div>
+        </div>
+    }
+</div>
